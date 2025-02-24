@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8317852414479987652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4351727531403304296}
+  - component: {fileID: 7452092863155194081}
+  - component: {fileID: 2289708915883471900}
+  m_Layer: 0
+  m_Name: SkillTree
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4351727531403304296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8317852414479987652}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7452092863155194081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8317852414479987652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01d0c3c6eb50fa7489c0c22b9825595f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OwnedSkillResource: 0
+  resourceAcquireDescription: 
+--- !u!114 &2289708915883471900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8317852414479987652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 910cfcd18dbd27b40b871187f7ad3ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  JSONFileTextField: SkillTreeData
+  nodePoints:
+  - Name: Base
+    Description: Starting point of the skill tree.
+    Position: {x: 0, y: 0, z: 0}
+    StatAugmented: 
+    MathDone: 
+    Value: 0
+    NodeNumber: 0
+    PreviousNode: 0
+    ResourceCost: 0
+    RequiredNodes: 00000000
+    RequiredStatName: 
+    RequiredStatValue: 0
+    RequiredSpentResource: 0
+    IsAcquired: 1
+  - Name: Strength Boost
+    Description: Increases Strength by 5.
+    Position: {x: -2, y: 2, z: 0}
+    StatAugmented: Strength
+    MathDone: +
+    Value: 5
+    NodeNumber: 1
+    PreviousNode: 0
+    ResourceCost: 1
+    RequiredNodes: 00000000
+    RequiredStatName: 
+    RequiredStatValue: 0
+    RequiredSpentResource: 0
+    IsAcquired: 0
+  - Name: Agility Boost
+    Description: Increases Agility by 3.
+    Position: {x: 2, y: 2, z: 0}
+    StatAugmented: Agility
+    MathDone: +
+    Value: 3
+    NodeNumber: 2
+    PreviousNode: 0
+    ResourceCost: 1
+    RequiredNodes: 00000000
+    RequiredStatName: 
+    RequiredStatValue: 0
+    RequiredSpentResource: 0
+    IsAcquired: 0
+  - Name: Power Strike
+    Description: Unlocks a strong attack move.
+    Position: {x: -3, y: 4, z: 0}
+    StatAugmented: Attack Power
+    MathDone: +
+    Value: 10
+    NodeNumber: 3
+    PreviousNode: 1
+    ResourceCost: 2
+    RequiredNodes: 01000000
+    RequiredStatName: Strength
+    RequiredStatValue: 5
+    RequiredSpentResource: 1
+    IsAcquired: 0
+  - Name: Swift Reflexes
+    Description: Improves dodge chance by 5%.
+    Position: {x: 3, y: 4, z: 0}
+    StatAugmented: Dodge
+    MathDone: '%'
+    Value: 5
+    NodeNumber: 4
+    PreviousNode: 2
+    ResourceCost: 2
+    RequiredNodes: 02000000
+    RequiredStatName: Agility
+    RequiredStatValue: 3
+    RequiredSpentResource: 1
+    IsAcquired: 0
+  - Name: Heavy Swing
+    Description: Unlocks an attack that deals more damage but is slower.
+    Position: {x: -4, y: 6, z: 0}
+    StatAugmented: Attack Power
+    MathDone: +
+    Value: 15
+    NodeNumber: 5
+    PreviousNode: 3
+    ResourceCost: 3
+    RequiredNodes: 03000000
+    RequiredStatName: Strength
+    RequiredStatValue: 10
+    RequiredSpentResource: 2
+    IsAcquired: 0
+  - Name: Evasion Mastery
+    Description: Grants an additional 10% dodge chance.
+    Position: {x: 4, y: 6, z: 0}
+    StatAugmented: Dodge
+    MathDone: +
+    Value: 10
+    NodeNumber: 6
+    PreviousNode: 4
+    ResourceCost: 3
+    RequiredNodes: 04000000
+    RequiredStatName: Agility
+    RequiredStatValue: 5
+    RequiredSpentResource: 2
+    IsAcquired: 0
+  - Name: Critical Focus
+    Description: Increases critical hit chance by 10%.
+    Position: {x: -1, y: 8, z: 0}
+    StatAugmented: Critical Chance
+    MathDone: +
+    Value: 10
+    NodeNumber: 7
+    PreviousNode: 5
+    ResourceCost: 4
+    RequiredNodes: 05000000
+    RequiredStatName: Attack Power
+    RequiredStatValue: 15
+    RequiredSpentResource: 3
+    IsAcquired: 0
+  - Name: Shadow Step
+    Description: Dramatically increases movement speed for 5 seconds.
+    Position: {x: 1, y: 8, z: 0}
+    StatAugmented: Speed
+    MathDone: +
+    Value: 20
+    NodeNumber: 8
+    PreviousNode: 6
+    ResourceCost: 4
+    RequiredNodes: 06000000
+    RequiredStatName: Dodge
+    RequiredStatValue: 10
+    RequiredSpentResource: 3
+    IsAcquired: 0
+  - Name: Enduring Will
+    Description: Reduces all damage taken by 5%.
+    Position: {x: -2, y: 10, z: 0}
+    StatAugmented: Damage Reduction
+    MathDone: '-'
+    Value: 5
+    NodeNumber: 9
+    PreviousNode: 7
+    ResourceCost: 5
+    RequiredNodes: 07000000
+    RequiredStatName: Critical Chance
+    RequiredStatValue: 10
+    RequiredSpentResource: 4
+    IsAcquired: 0
+  - Name: Lightning Reflexes
+    Description: Allows you to dodge an attack once per encounter.
+    Position: {x: 2, y: 10, z: 0}
+    StatAugmented: Evasion
+    MathDone: +
+    Value: 1
+    NodeNumber: 10
+    PreviousNode: 8
+    ResourceCost: 5
+    RequiredNodes: 08000000
+    RequiredStatName: Speed
+    RequiredStatValue: 20
+    RequiredSpentResource: 4
+    IsAcquired: 0
+  useWorldSpace: 0
+  SelectedNodeIndex: -1
+  skillNodePrefab: {fileID: 6110421354640030419, guid: 597a5a1809874804a9b97b69e2ff3cd5, type: 3}

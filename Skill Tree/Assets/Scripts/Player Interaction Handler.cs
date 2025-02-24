@@ -1,14 +1,30 @@
-using Unity.Properties;
 using UnityEngine;
 using System.Reflection;
 using System;
 
 public class PlayerInteractionHandler : MonoBehaviour
 {
-    [SerializeField]
-    SkillTree skillTree = null;
+    public static PlayerInteractionHandler Instance { get; private set; }
 
-    //Event for when isAcquired changed to true
+    [SerializeField]
+
+    //Can represent anything. Skill points, shards, etc. Required for purchasing skills with a non-zero price
+    public float OwnedSkillResource = 0;
+    [SerializeField]
+    private string resourceAcquireDescription = null;
+    private float totalSpentSkillResource = 0;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // Ensure only one instance exists
+            return;
+        }
+
+        Instance = this;
+    }
+
 
     /// <summary>
     /// Applies the math to the player given a certain skill and mathematical type. Skills modified this way must be public floats. Reflects the player's fields and properties with the skill's name
@@ -155,7 +171,7 @@ public class PlayerInteractionHandler : MonoBehaviour
     /// <param name="statAugmented">(Optional) What stat is specifically being recalculated</param>
     public void CalculateAllSkillEffects(GameObject player, string statAugmented = null)
     {
-        foreach (SkillNode node in skillTree.nodePoints)
+        foreach (SkillNode node in SkillTree.Instance.nodePoints)
         {
             //only does the recalculations of a specific stat
             if (node.IsAcquired && statAugmented == node.StatAugmented)
@@ -169,6 +185,128 @@ public class PlayerInteractionHandler : MonoBehaviour
             }
         }
     }
+
+    public void PurchaseSkillNode(int index, GameObject player)
+    {
+        float skillCost = SkillTree.Instance.nodePoints[index].ResourceCost;
+
+        //If the node has a required prerequisite
+        if (isRequiredStatSufficient(index, player, SkillTree.Instance.nodePoints[index].RequiredStatName))
+        {
+            //If you've spent enough resources
+            if (isEnoughResourceSpent(index))
+            {
+                Debug.Log("You've spent enough.");
+                //If you own enough resources to purchase the skill
+                if (OwnedSkillResource >= skillCost)
+                {
+                    OwnedSkillResource -= skillCost;
+                    if (OwnedSkillResource < 0)
+                    {
+                        OwnedSkillResource = 0;
+                    }
+                    totalSpentSkillResource += skillCost;
+                    SkillTree.Instance.AcquireSkillNode(index);
+                    ApplySkillEffects(player, SkillTree.Instance.nodePoints[index].StatAugmented, SkillTree.Instance.nodePoints[index].MathDone, SkillTree.Instance.nodePoints[index].Value);
+                }
+                else
+                {
+                    Debug.Log("You do not meet the resource requirement for this skill.");
+                }
+            }
+            else
+            {
+                Debug.Log("You do not meet the prerequisite spending requirement for this skill.");
+            }
+        }
+        else
+        {
+            Debug.Log("You do not meet the stat requirement for this skill.");
+            return;
+        }
+
+
+
+    }
+
+    public bool CanPurchaseSkillNode(int index, GameObject player)
+    {
+        float skillCost = SkillTree.Instance.nodePoints[index].ResourceCost;
+        bool statPrereqMet = false;
+        //If the node has a required prerequisite
+        if (SkillTree.Instance.nodePoints[index].RequiredStatName != "")
+        {
+            statPrereqMet = isRequiredStatSufficient(index, player, SkillTree.Instance.nodePoints[index].RequiredStatName);
+            //If you've spent enough resources
+            if (isEnoughResourceSpent(index))
+            {
+                //If you own enough resources to purchase the skill
+                if (OwnedSkillResource >= skillCost)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+
+            return false;
+        }
+    }
+
+    public void AcquireSkillResource(float numberAcquired)
+    {
+        Debug.Log(resourceAcquireDescription);
+        OwnedSkillResource += numberAcquired;
+    }
+
+    private bool isRequiredStatSufficient(int selfIndex, GameObject player, string statName)
+    {
+        if (statName == "") return true;
+        var playerComponent = player.GetComponent<TestPlayer>();
+        if (playerComponent == null)
+        {
+            Debug.Log("Player component not found on player game object!");
+            return false;
+        }
+        Type playerType = playerComponent.GetType();
+        FieldInfo field = playerType.GetField(statName, BindingFlags.Public | BindingFlags.Instance);
+        PropertyInfo property = playerType.GetProperty(statName, BindingFlags.Public | BindingFlags.Instance);
+
+        if (field != null)
+        {
+            if (SkillTree.Instance.nodePoints[selfIndex].RequiredStatName == statName && SkillTree.Instance.nodePoints[selfIndex].RequiredStatValue < (float)field.GetValue(playerComponent))
+            {
+                return true;
+            }
+        }
+        if (property != null)
+        {
+            if (SkillTree.Instance.nodePoints[selfIndex].RequiredStatName == statName && SkillTree.Instance.nodePoints[selfIndex].RequiredStatValue < (float)property.GetValue(playerComponent))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool isEnoughResourceSpent(int selfIndex)
+    {
+        float requirement = SkillTree.Instance.nodePoints[selfIndex].RequiredSpentResource;
+
+        return totalSpentSkillResource >= requirement;
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

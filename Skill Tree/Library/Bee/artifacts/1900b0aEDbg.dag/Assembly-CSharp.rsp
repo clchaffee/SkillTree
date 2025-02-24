@@ -372,6 +372,7 @@
 -r:"Library/PackageCache/com.unity.nuget.mono-cecil@d6f9955a5d5f/Mono.Cecil.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@1b53f46e931b/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/PPv2URPConverters.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.2D.Sprite.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.AI.Navigation.Editor.ConversionSystem.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.AI.Navigation.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.AI.Navigation.ref.dll"
@@ -427,6 +428,8 @@
 "Assets/Scripts/Skill Node Container.cs"
 "Assets/Scripts/Skill Node.cs"
 "Assets/Scripts/Skill Tree.cs"
+"Assets/Scripts/SkillNodePrefab.cs"
+"Assets/Scripts/SkillUIManager.cs"
 "Assets/Scripts/TestPlayer.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0

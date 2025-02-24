@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.IO;
-using System.Linq;
 
 public class SkillTree : MonoBehaviour
 {
+    public static SkillTree Instance { get; private set; } 
     [SerializeField]
     [Tooltip("Case sensitive path to JSON file to populate the Skill Tree. If the file is in the Assets folder, simply type the name of the file." +
     "\nWhenever this value is set to a valid file path, the skill tree node list will update to match the file, possibly deleting manually added nodes.")]
@@ -15,6 +15,10 @@ public class SkillTree : MonoBehaviour
     [Tooltip("Use world space for position data. May change the results of a node's placement if the SkillTree object is not at (0,0,0)")]
     private bool useWorldSpace = false;
     public int NumberOfSkillNodes { get { return nodePoints.Length; } }
+    [HideInInspector]
+    public int SelectedNodeIndex = -1; // -1 means no selection
+    [Tooltip("Game Object to populate the Skill Tree with on runtime")]
+    public GameObject skillNodePrefab;
 
     /// <summary>
     /// Is called every time the inspector is changed, but not when the game is compiled or ran.
@@ -95,8 +99,8 @@ public class SkillTree : MonoBehaviour
     /// <param name="index">The index of the skill being acquired</param>
     public void AcquireSkillNode(int index)
     {
-        bool isAcquireable = nodePoints[index].IsAcquired;
-        if (!isAcquireable) return;
+        //if the node is acquired, exit
+        if (nodePoints[index].IsAcquired) return;
 
         int requirementTracker = 0;
         //Loops through all requirements to see if they have been met
@@ -134,7 +138,6 @@ public class SkillTree : MonoBehaviour
         return nodePoints[requiredNodeIndex].IsAcquired;
     }
 
-
     private void OnDrawGizmos()
     {
         if (nodePoints == null)
@@ -151,5 +154,41 @@ public class SkillTree : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates new prefab objects so that clickable MonBehavior objects are able to be interacted with
+    /// </summary>
+    private void Start()
+    {
+        //Destroy any nodes if there are objects already in the scene
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < nodePoints.Length; i++)
+        {
+            SkillNode node = nodePoints[i];
+
+            // Instantiate the prefab
+            GameObject skillNode = Instantiate(skillNodePrefab, GetSkillNodePosition(i), Quaternion.identity, this.transform);
+            // Set the name of the GameObject for clarity in the hierarchy
+            skillNode.name = $"Skill Node {i}";
+
+            SkillNodePrefab prefab = skillNode.GetComponent<SkillNodePrefab>();
+            prefab.Initialize(node, i);
+        }
+        this.gameObject.SetActive(false);
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // Ensure only one instance exists
+            return;
+        }
+
+        Instance = this;
+    }
 
 }
